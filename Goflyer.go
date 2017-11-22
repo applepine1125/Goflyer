@@ -15,31 +15,6 @@ type API struct {
 	client *http.Client
 }
 
-type ohlcResult struct {
-	CloseTime  *string
-	OpenPrice  *float64
-	HighPrice  *float64
-	LowPrice   *float64
-	ClosePrice *float64
-	Volume     *float64
-}
-type ohlcAllowance struct {
-	Cost      int64 `json:"cost"`
-	Remaining int64 `json:"remaining"`
-}
-
-// OHLC struct from cryptwatch
-type OHLC struct {
-	Results   []ohlcResult
-	Allowance ohlcAllowance
-}
-
-// Market struct represents markets from bitflyer
-type Market struct {
-	ProductCode string `json:"product_code"`
-	Alias       string `json:"alias"`
-}
-
 //NewAPI returns API struct
 func NewAPI(secret string, key string) (a *API) {
 	a = new(API)
@@ -50,7 +25,7 @@ func NewAPI(secret string, key string) (a *API) {
 }
 
 // Request method in API
-func (a *API) Request(url string, endPoint string, method string, params string) string {
+func (a *API) Request(url string, endPoint string, method string, params string) []byte {
 	req, _ := http.NewRequest(method, url+endPoint+params, nil)
 
 	resp, err := a.client.Do(req)
@@ -64,7 +39,27 @@ func (a *API) Request(url string, endPoint string, method string, params string)
 		log.Fatal(err)
 	}
 
-	return string(byteArray)
+	return byteArray
+}
+
+type ohlcResult struct {
+	Terms [][]float64 `json:"1800"`
+	// CloseTime  *string
+	// OpenPrice  *float64
+	// HighPrice  *float64
+	// LowPrice   *float64
+	// ClosePrice *float64
+	// Volume     *float64
+}
+type ohlcAllowance struct {
+	Cost      int64 `json:"cost"`
+	Remaining int64 `json:"remaining"`
+}
+
+// OHLC struct from cryptwatch
+type OHLC struct {
+	Result    ohlcResult
+	Allowance ohlcAllowance
 }
 
 // GetOHLC method in API returns OHLC data and error(if error occured)
@@ -91,8 +86,8 @@ func (a *API) GetOHLC(ProductCode string, params string) (OHLC, error) {
 		return o, fmt.Errorf("not found product_code: %s", ProductCode)
 	}
 
-	stringArray := a.Request(crypto, path, "GET", params)
-	err := json.Unmarshal([]byte(stringArray), &o)
+	byteArray := a.Request(crypto, path, "GET", params)
+	err := json.Unmarshal(byteArray, &o)
 
 	if err != nil {
 		log.Fatal(err)
@@ -101,18 +96,43 @@ func (a *API) GetOHLC(ProductCode string, params string) (OHLC, error) {
 	return o, nil
 }
 
+// Market struct represents markets from bitflyer
+type Market struct {
+	ProductCode string `json:"product_code"`
+	Alias       string `json:"alias"`
+}
+
 // GetMarkets method in API
-func (a *API) GetMarkets() []Market {
+func (a *API) GetMarkets() ([]Market, error) {
 	bitflyer := "https://api.bitflyer.jp/v1/"
 	path := "markets"
 
 	var m []Market
-	stringArray := a.Request(bitflyer, path, "GET", "")
-	err := json.Unmarshal([]byte(stringArray), &m)
+	byteArray := a.Request(bitflyer, path, "GET", "")
+	err := json.Unmarshal(byteArray, &m)
 
-	if err != nil {
-		log.Fatal(err)
-	}
+	return m, err
+}
 
-	return m
+type Boards struct {
+	MidPrice float64 `json:"mid_price"`
+	Bids     []Order `json:"bids"`
+	Asks     []Order `json:"asks"`
+}
+
+type Order struct {
+	Price float64 `json:"price"`
+	Size  float64 `json:"size"`
+}
+
+func (a *API) GetBoard(ProductCode string) (Boards, error) {
+	bitflyer := "https://api.bitflyer.jp/v1/"
+	path := "board"
+	params := "?product_code=" + ProductCode
+
+	var b Boards
+	byteArray := a.Request(bitflyer, path, "GET", params)
+	err := json.Unmarshal(byteArray, &b)
+
+	return b, err
 }
