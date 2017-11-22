@@ -4,7 +4,6 @@ import (
 	"encoding/json"
 	"fmt"
 	"io/ioutil"
-	"log"
 	"net/http"
 )
 
@@ -25,75 +24,25 @@ func NewAPI(secret string, key string) (a *API) {
 }
 
 // Request method in API
-func (a *API) Request(url string, endPoint string, method string, params string) []byte {
+func (a *API) Request(url string, endPoint string, method string, params string) ([]byte, error) {
 	req, _ := http.NewRequest(method, url+endPoint+params, nil)
-
 	resp, err := a.client.Do(req)
+
 	if err != nil {
-		log.Fatal(err)
+		return nil, err
+	} else if resp.StatusCode != 200 {
+		return nil, fmt.Errorf("API returns status %s", resp.Status)
 	}
+
 	defer resp.Body.Close()
 
 	byteArray, err := ioutil.ReadAll(resp.Body)
-	if err != nil {
-		log.Fatal(err)
-	}
-
-	return byteArray
-}
-
-type ohlcResult struct {
-	Terms [][]float64 `json:"1800"`
-	// CloseTime  *string
-	// OpenPrice  *float64
-	// HighPrice  *float64
-	// LowPrice   *float64
-	// ClosePrice *float64
-	// Volume     *float64
-}
-type ohlcAllowance struct {
-	Cost      int64 `json:"cost"`
-	Remaining int64 `json:"remaining"`
-}
-
-// OHLC struct from cryptwatch
-type OHLC struct {
-	Result    ohlcResult
-	Allowance ohlcAllowance
-}
-
-// GetOHLC method in API returns OHLC data and error(if error occured)
-func (a *API) GetOHLC(ProductCode string, params string) (OHLC, error) {
-	crypto := "https://api.cryptowat.ch/"
-	path := ""
-	var o OHLC
-
-	//TODO: エイリアスじゃなくプロダクトコードに対応させる．MAT1WEEK, MAT2WEEKのプロダクトコードは自動生成させる.
-	switch ProductCode {
-	case "FX_BTC_JPY":
-		path = "markets/bitflyer/btcfxjpy/ohlc"
-	case "BTC_JPY":
-		path = "markets/bitflyer/btcjpy/ohlc"
-	case "ETH_BTC":
-		path = "markets/bitflyer/ethbtc/ohlc"
-	case "BCH_BTC":
-		path = "markets/bitflyer/bchbtc/ohlc"
-	case "BTCJPY_MAT1WK":
-		path = "markets/bitflyer/btcjpy/ohlc"
-	case "BTCJPY_MAT2WK":
-		path = "markets/bitflyer/btcjpy/ohlc"
-	default:
-		return o, fmt.Errorf("not found product_code: %s", ProductCode)
-	}
-
-	byteArray := a.Request(crypto, path, "GET", params)
-	err := json.Unmarshal(byteArray, &o)
 
 	if err != nil {
-		log.Fatal(err)
+		return byteArray, err
 	}
 
-	return o, nil
+	return byteArray, nil
 }
 
 // Market struct represents markets from bitflyer
@@ -106,15 +55,19 @@ type Market struct {
 func (a *API) GetMarkets() ([]Market, error) {
 	bitflyer := "https://api.bitflyer.jp/v1/"
 	path := "markets"
+	var market []Market
 
-	var m []Market
-	byteArray := a.Request(bitflyer, path, "GET", "")
-	err := json.Unmarshal(byteArray, &m)
+	byteArray, err := a.Request(bitflyer, path, "GET", "")
+	if err != nil {
+		return market, err
+	}
 
-	return m, err
+	err = json.Unmarshal(byteArray, &market)
+
+	return market, err
 }
 
-type Boards struct {
+type Board struct {
 	MidPrice float64 `json:"mid_price"`
 	Bids     []Order `json:"bids"`
 	Asks     []Order `json:"asks"`
@@ -125,14 +78,48 @@ type Order struct {
 	Size  float64 `json:"size"`
 }
 
-func (a *API) GetBoard(ProductCode string) (Boards, error) {
+func (a *API) GetBoard(ProductCode string) (Board, error) {
 	bitflyer := "https://api.bitflyer.jp/v1/"
 	path := "board"
 	params := "?product_code=" + ProductCode
+	var board Board
 
-	var b Boards
-	byteArray := a.Request(bitflyer, path, "GET", params)
-	err := json.Unmarshal(byteArray, &b)
+	byteArray, err := a.Request(bitflyer, path, "GET", params)
+	if err != nil {
+		return board, err
+	}
 
-	return b, err
+	err = json.Unmarshal(byteArray, &board)
+
+	return board, err
+}
+
+type Ticker struct {
+	ProductCode     string  `json:"product_code"`
+	TimeStamp       string  `json:"timestamp"`
+	TickId          int64   `json:"tick_id"`
+	BestBid         float64 `json:"best_bid"`
+	BestAsk         float64 `json:"best_ask"`
+	BestBidSize     float64 `json:"best_bid_size"`
+	BestAskSize     float64 `json:"best_ask_size"`
+	TotalBidDepth   float64 `json:"total_bid_depth"`
+	TotalAskDepth   float64 `json:"total_ask_depth"`
+	Ltp             float64 `json:"ltp"`
+	Volume          float64 `json:"volume"`
+	VolumeByProduct float64 `json:"volume_by_product"`
+}
+
+func (a *API) GetTicker(ProductCode string) (Ticker, error) {
+	bitflyer := "https://api.bitflyer.jp/v1/"
+	path := "ticker"
+	params := "?product_code=" + ProductCode
+	var ticker Ticker
+
+	byteArray, err := a.Request(bitflyer, path, "GET", params)
+	if err != nil {
+		return ticker, err
+	}
+	err = json.Unmarshal(byteArray, &ticker)
+
+	return ticker, err
 }
