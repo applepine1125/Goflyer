@@ -148,3 +148,28 @@ func (a *API) GetExecutions(ProductCode string) ([]Execution, error) {
 
 	return executions, err
 }
+
+type BoardState struct {
+	Health string           `json:"health"`
+	State  string           `json:"state"`
+	Data   specialQuotation `json:"data"`
+}
+
+type specialQuotation struct {
+	SpecialQuotation float64 `json:"special_quotation"`
+}
+
+func (a *API) GetBoardState(ProductCode string) (BoardState, error) {
+	bitflyer := "https://api.bitflyer.jp/v1/"
+	path := "getboardstate"
+	params := "?product_code=" + ProductCode
+	var boardState BoardState
+
+	byteArray, err := a.Request(bitflyer, path, "GET", params)
+	if err != nil {
+		return boardState, err
+	}
+	err = json.Unmarshal(byteArray, &boardState)
+
+	return boardState, err
+}
