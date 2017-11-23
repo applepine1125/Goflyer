@@ -10,11 +10,10 @@ type Market struct {
 }
 
 func (a *API) GetMarkets() ([]Market, error) {
-	bitflyer := "https://api.bitflyer.jp/v1/"
-	path := "markets"
+	path := "/v1/markets"
 	var market []Market
 
-	byteArray, err := a.Request(bitflyer, path, "GET", "")
+	byteArray, err := a.PublicAPIRequest(path, "GET", "")
 	if err != nil {
 		return market, err
 	}
@@ -36,12 +35,11 @@ type Order struct {
 }
 
 func (a *API) GetBoard(ProductCode string) (Board, error) {
-	bitflyer := "https://api.bitflyer.jp/v1/"
-	path := "board"
+	path := "/v1/board"
 	params := "?product_code=" + ProductCode
 	var board Board
 
-	byteArray, err := a.Request(bitflyer, path, "GET", params)
+	byteArray, err := a.PublicAPIRequest(path, "GET", params)
 	if err != nil {
 		return board, err
 	}
@@ -67,12 +65,11 @@ type Ticker struct {
 }
 
 func (a *API) GetTicker(ProductCode string) (Ticker, error) {
-	bitflyer := "https://api.bitflyer.jp/v1/"
-	path := "ticker"
+	path := "/v1/ticker"
 	params := "?product_code=" + ProductCode
 	var ticker Ticker
 
-	byteArray, err := a.Request(bitflyer, path, "GET", params)
+	byteArray, err := a.PublicAPIRequest(path, "GET", params)
 	if err != nil {
 		return ticker, err
 	}
@@ -92,12 +89,11 @@ type Execution struct {
 }
 
 func (a *API) GetExecutions(ProductCode string) ([]Execution, error) {
-	bitflyer := "https://api.bitflyer.jp/v1/"
-	path := "executions"
+	path := "/v1/executions"
 	params := "?product_code=" + ProductCode
 	var executions []Execution
 
-	byteArray, err := a.Request(bitflyer, path, "GET", params)
+	byteArray, err := a.PublicAPIRequest(path, "GET", params)
 	if err != nil {
 		return executions, err
 	}
@@ -117,12 +113,11 @@ type specialQuotation struct {
 }
 
 func (a *API) GetBoardState(ProductCode string) (BoardState, error) {
-	bitflyer := "https://api.bitflyer.jp/v1/"
-	path := "getboardstate"
+	path := "/v1/getboardstate"
 	params := "?product_code=" + ProductCode
 	var boardState BoardState
 
-	byteArray, err := a.Request(bitflyer, path, "GET", params)
+	byteArray, err := a.PublicAPIRequest(path, "GET", params)
 	if err != nil {
 		return boardState, err
 	}
@@ -136,12 +131,11 @@ type MarketHealth struct {
 }
 
 func (a *API) GetMarketHealth(ProductCode string) (MarketHealth, error) {
-	bitflyer := "https://api.bitflyer.jp/v1/"
-	path := "gethealth"
+	path := "/v1/gethealth"
 	params := "?product_code=" + ProductCode
 	var marketHealth MarketHealth
 
-	byteArray, err := a.Request(bitflyer, path, "GET", params)
+	byteArray, err := a.PublicAPIRequest(path, "GET", params)
 	if err != nil {
 		return marketHealth, err
 	}
@@ -157,12 +151,11 @@ type ChatMessage struct {
 }
 
 func (a *API) GetChatMessages(fromDate string) ([]ChatMessage, error) {
-	bitflyer := "https://api.bitflyer.jp/v1/"
-	path := "getchats"
+	path := "/v1/getchats"
 	params := "?from_date=" + fromDate
 	var chatMessages []ChatMessage
 
-	byteArray, err := a.Request(bitflyer, path, "GET", params)
+	byteArray, err := a.PublicAPIRequest(path, "GET", params)
 	if err != nil {
 		return chatMessages, err
 	}
