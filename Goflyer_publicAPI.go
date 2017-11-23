@@ -36,7 +36,10 @@ type Order struct {
 
 func (a *API) GetBoard(ProductCode string) (Board, error) {
 	path := "/v1/board"
-	params := "?product_code=" + ProductCode
+	params := ""
+	if ProductCode != "" {
+		params = "?product_code=" + ProductCode
+	}
 	var board Board
 
 	byteArray, err := a.PublicAPIRequest(path, "GET", params)
@@ -66,7 +69,10 @@ type Ticker struct {
 
 func (a *API) GetTicker(ProductCode string) (Ticker, error) {
 	path := "/v1/ticker"
-	params := "?product_code=" + ProductCode
+	params := ""
+	if ProductCode != "" {
+		params = "?product_code=" + ProductCode
+	}
 	var ticker Ticker
 
 	byteArray, err := a.PublicAPIRequest(path, "GET", params)
@@ -90,7 +96,10 @@ type Execution struct {
 
 func (a *API) GetExecutions(ProductCode string) ([]Execution, error) {
 	path := "/v1/executions"
-	params := "?product_code=" + ProductCode
+	params := ""
+	if ProductCode != "" {
+		params = "?product_code=" + ProductCode
+	}
 	var executions []Execution
 
 	byteArray, err := a.PublicAPIRequest(path, "GET", params)
@@ -114,7 +123,10 @@ type specialQuotation struct {
 
 func (a *API) GetBoardState(ProductCode string) (BoardState, error) {
 	path := "/v1/getboardstate"
-	params := "?product_code=" + ProductCode
+	params := ""
+	if ProductCode != "" {
+		params = "?product_code=" + ProductCode
+	}
 	var boardState BoardState
 
 	byteArray, err := a.PublicAPIRequest(path, "GET", params)
@@ -132,7 +144,11 @@ type MarketHealth struct {
 
 func (a *API) GetMarketHealth(ProductCode string) (MarketHealth, error) {
 	path := "/v1/gethealth"
-	params := "?product_code=" + ProductCode
+	params := ""
+	if ProductCode != "" {
+		params = "?product_code=" + ProductCode
+	}
+
 	var marketHealth MarketHealth
 
 	byteArray, err := a.PublicAPIRequest(path, "GET", params)
@@ -152,7 +168,10 @@ type ChatMessage struct {
 
 func (a *API) GetChatMessages(fromDate string) ([]ChatMessage, error) {
 	path := "/v1/getchats"
-	params := "?from_date=" + fromDate
+	params := ""
+	if fromDate != "" {
+		params = "?from_date=" + fromDate
+	}
 	var chatMessages []ChatMessage
 
 	byteArray, err := a.PublicAPIRequest(path, "GET", params)
