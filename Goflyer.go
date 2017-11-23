@@ -173,3 +173,22 @@ func (a *API) GetBoardState(ProductCode string) (BoardState, error) {
 
 	return boardState, err
 }
+
+type MarketHealth struct {
+	Status string `json:"status"`
+}
+
+func (a *API) GetMarketHealth(ProductCode string) (MarketHealth, error) {
+	bitflyer := "https://api.bitflyer.jp/v1/"
+	path := "gethealth"
+	params := "?product_code=" + ProductCode
+	var marketHealth MarketHealth
+
+	byteArray, err := a.Request(bitflyer, path, "GET", params)
+	if err != nil {
+		return marketHealth, err
+	}
+	err = json.Unmarshal(byteArray, &marketHealth)
+
+	return marketHealth, err
+}
