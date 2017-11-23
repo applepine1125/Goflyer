@@ -97,7 +97,7 @@ func (a *API) GetBoard(ProductCode string) (Board, error) {
 type Ticker struct {
 	ProductCode     string  `json:"product_code"`
 	TimeStamp       string  `json:"timestamp"`
-	TickId          int64   `json:"tick_id"`
+	TickID          int64   `json:"tick_id"`
 	BestBid         float64 `json:"best_bid"`
 	BestAsk         float64 `json:"best_ask"`
 	BestBidSize     float64 `json:"best_bid_size"`
@@ -122,4 +122,29 @@ func (a *API) GetTicker(ProductCode string) (Ticker, error) {
 	err = json.Unmarshal(byteArray, &ticker)
 
 	return ticker, err
+}
+
+type Execution struct {
+	ID                         int64   `json:"id"`
+	Side                       string  `json:"side"`
+	Price                      float64 `json:"price"`
+	Size                       float64 `json:"size"`
+	ExecDate                   string  `json:"exec_d"`
+	BuyChildOrderAcceptanceID  string  `json:"buy_child_order_acceptance_id"`
+	SellChildOrderAcceptanceID string  `json:"sell_child_order_acceptance_id"`
+}
+
+func (a *API) GetExecutions(ProductCode string) ([]Execution, error) {
+	bitflyer := "https://api.bitflyer.jp/v1/"
+	path := "executions"
+	params := "?product_code=" + ProductCode
+	var executions []Execution
+
+	byteArray, err := a.Request(bitflyer, path, "GET", params)
+	if err != nil {
+		return executions, err
+	}
+	err = json.Unmarshal(byteArray, &executions)
+
+	return executions, err
 }
