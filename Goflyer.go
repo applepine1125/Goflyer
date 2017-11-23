@@ -7,14 +7,12 @@ import (
 	"net/http"
 )
 
-// API struct
 type API struct {
 	secret string
 	key    string
 	client *http.Client
 }
 
-//NewAPI returns API struct
 func NewAPI(secret string, key string) (a *API) {
 	a = new(API)
 	a.secret = secret
@@ -23,7 +21,6 @@ func NewAPI(secret string, key string) (a *API) {
 	return a
 }
 
-// Request method in API
 func (a *API) Request(url string, endPoint string, method string, params string) ([]byte, error) {
 	req, _ := http.NewRequest(method, url+endPoint+params, nil)
 	resp, err := a.client.Do(req)
@@ -45,13 +42,11 @@ func (a *API) Request(url string, endPoint string, method string, params string)
 	return byteArray, nil
 }
 
-// Market struct represents markets from bitflyer
 type Market struct {
 	ProductCode string `json:"product_code"`
 	Alias       string `json:"alias"`
 }
 
-// GetMarkets method in API
 func (a *API) GetMarkets() ([]Market, error) {
 	bitflyer := "https://api.bitflyer.jp/v1/"
 	path := "markets"
@@ -191,4 +186,25 @@ func (a *API) GetMarketHealth(ProductCode string) (MarketHealth, error) {
 	err = json.Unmarshal(byteArray, &marketHealth)
 
 	return marketHealth, err
+}
+
+type ChatMessage struct {
+	NickName string `json:"nickname"`
+	Message  string `json:"message"`
+	Date     string `json:"date"`
+}
+
+func (a *API) GetChatMessages(fromDate string) ([]ChatMessage, error) {
+	bitflyer := "https://api.bitflyer.jp/v1/"
+	path := "getchats"
+	params := "?from_date=" + fromDate
+	var chatMessages []ChatMessage
+
+	byteArray, err := a.Request(bitflyer, path, "GET", params)
+	if err != nil {
+		return chatMessages, err
+	}
+	err = json.Unmarshal(byteArray, &chatMessages)
+
+	return chatMessages, err
 }
