@@ -44,3 +44,45 @@ func (a *API) GetBalance() ([]Balance, error) {
 
 	return balances, err
 }
+
+type Collateral struct {
+	Collateral        float64 `json:"collateral"`
+	OpenPositionPnl   float64 `jdon:"open_position_pnl"`
+	RequireCollateral float64 `json:"require_collateral"`
+	KeepRate          float64 `json:"keep_rate"`
+}
+
+func (a *API) GetCollateral() (Collateral, error) {
+	path := "/v1/me/getcollateral"
+
+	var collateral Collateral
+	byteSlice, err := a.PrivateAPIRequest(path, "GET", "")
+
+	if err != nil {
+		return collateral, err
+	}
+
+	err = json.Unmarshal(byteSlice, &collateral)
+
+	return collateral, err
+}
+
+type CollateralAccount struct {
+	CurrencyCode string  `json:"currency_code"`
+	Amount       float64 `json:"amount"`
+}
+
+func (a *API) GetCollateralAccounts() ([]CollateralAccount, error) {
+	path := "/v1/me/getcollateralaccounts"
+
+	var collateralAccounts []CollateralAccount
+	byteSlice, err := a.PrivateAPIRequest(path, "GET", "")
+
+	if err != nil {
+		return collateralAccounts, err
+	}
+
+	err = json.Unmarshal(byteSlice, &collateralAccounts)
+
+	return collateralAccounts, err
+}
