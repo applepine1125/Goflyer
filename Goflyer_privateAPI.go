@@ -160,7 +160,7 @@ type BankAccount struct {
 	AccountName   string `json:"account_name"`
 }
 
-func (a *API) GetBankAoounts() (bankAccounts []BankAccount, err error) {
+func (a *API) GetBankAccounts() (bankAccounts []BankAccount, err error) {
 	path := "/v1/me/getbankaccounts"
 	byteSlice, err := a.PrivateAPIRequest(path, "GET", "")
 
