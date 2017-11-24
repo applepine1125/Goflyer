@@ -50,7 +50,6 @@ func (a *API) PublicAPIRequest(path string, method string, params string) ([]byt
 }
 
 func (a *API) PrivateAPIRequest(path string, method string, body string) ([]byte, error) {
-
 	accessTimeStamp := string(time.Now().Unix())
 	accessSign := accessTimeStamp + method + path + body
 	hmac := hmac.New(sha256.New, []byte(a.secret))
