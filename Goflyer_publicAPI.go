@@ -9,18 +9,17 @@ type Market struct {
 	Alias       string `json:"alias"`
 }
 
-func (a *API) GetMarkets() ([]Market, error) {
+func (a *API) GetMarkets() (markets []Market, err error) {
 	path := "/v1/markets"
-	var market []Market
 
-	byteArray, err := a.PublicAPIRequest(path, "GET", "")
+	byteSlice, err := a.PublicAPIRequest(path, "GET", "")
 	if err != nil {
-		return market, err
+		return markets, err
 	}
 
-	err = json.Unmarshal(byteArray, &market)
+	err = json.Unmarshal(byteSlice, &markets)
 
-	return market, err
+	return markets, err
 }
 
 type Board struct {
@@ -34,20 +33,19 @@ type Order struct {
 	Size  float64 `json:"size"`
 }
 
-func (a *API) GetBoard(ProductCode string) (Board, error) {
+func (a *API) GetBoard(ProductCode string) (board Board, err error) {
 	path := "/v1/board"
 	params := ""
 	if ProductCode != "" {
 		params = "?product_code=" + ProductCode
 	}
-	var board Board
 
-	byteArray, err := a.PublicAPIRequest(path, "GET", params)
+	byteSlice, err := a.PublicAPIRequest(path, "GET", params)
 	if err != nil {
 		return board, err
 	}
 
-	err = json.Unmarshal(byteArray, &board)
+	err = json.Unmarshal(byteSlice, &board)
 
 	return board, err
 }
@@ -67,19 +65,18 @@ type Ticker struct {
 	VolumeByProduct float64 `json:"volume_by_product"`
 }
 
-func (a *API) GetTicker(ProductCode string) (Ticker, error) {
+func (a *API) GetTicker(ProductCode string) (ticker Ticker, err error) {
 	path := "/v1/ticker"
 	params := ""
 	if ProductCode != "" {
 		params = "?product_code=" + ProductCode
 	}
-	var ticker Ticker
 
-	byteArray, err := a.PublicAPIRequest(path, "GET", params)
+	byteSlice, err := a.PublicAPIRequest(path, "GET", params)
 	if err != nil {
 		return ticker, err
 	}
-	err = json.Unmarshal(byteArray, &ticker)
+	err = json.Unmarshal(byteSlice, &ticker)
 
 	return ticker, err
 }
@@ -94,19 +91,18 @@ type Execution struct {
 	SellChildOrderAcceptanceID string  `json:"sell_child_order_acceptance_id"`
 }
 
-func (a *API) GetExecutions(ProductCode string) ([]Execution, error) {
+func (a *API) GetExecutions(ProductCode string) (executions []Execution, err error) {
 	path := "/v1/executions"
 	params := ""
 	if ProductCode != "" {
 		params = "?product_code=" + ProductCode
 	}
-	var executions []Execution
 
-	byteArray, err := a.PublicAPIRequest(path, "GET", params)
+	byteSlice, err := a.PublicAPIRequest(path, "GET", params)
 	if err != nil {
 		return executions, err
 	}
-	err = json.Unmarshal(byteArray, &executions)
+	err = json.Unmarshal(byteSlice, &executions)
 
 	return executions, err
 }
@@ -121,19 +117,18 @@ type specialQuotation struct {
 	SpecialQuotation float64 `json:"special_quotation"`
 }
 
-func (a *API) GetBoardState(ProductCode string) (BoardState, error) {
+func (a *API) GetBoardState(ProductCode string) (boardState BoardState, err error) {
 	path := "/v1/getboardstate"
 	params := ""
 	if ProductCode != "" {
 		params = "?product_code=" + ProductCode
 	}
-	var boardState BoardState
 
-	byteArray, err := a.PublicAPIRequest(path, "GET", params)
+	byteSlice, err := a.PublicAPIRequest(path, "GET", params)
 	if err != nil {
 		return boardState, err
 	}
-	err = json.Unmarshal(byteArray, &boardState)
+	err = json.Unmarshal(byteSlice, &boardState)
 
 	return boardState, err
 }
@@ -142,20 +137,18 @@ type MarketHealth struct {
 	Status string `json:"status"`
 }
 
-func (a *API) GetMarketHealth(ProductCode string) (MarketHealth, error) {
+func (a *API) GetMarketHealth(ProductCode string) (marketHealth MarketHealth, err error) {
 	path := "/v1/gethealth"
 	params := ""
 	if ProductCode != "" {
 		params = "?product_code=" + ProductCode
 	}
 
-	var marketHealth MarketHealth
-
-	byteArray, err := a.PublicAPIRequest(path, "GET", params)
+	byteSlice, err := a.PublicAPIRequest(path, "GET", params)
 	if err != nil {
 		return marketHealth, err
 	}
-	err = json.Unmarshal(byteArray, &marketHealth)
+	err = json.Unmarshal(byteSlice, &marketHealth)
 
 	return marketHealth, err
 }
@@ -166,19 +159,18 @@ type ChatMessage struct {
 	Date     string `json:"date"`
 }
 
-func (a *API) GetChatMessages(fromDate string) ([]ChatMessage, error) {
+func (a *API) GetChatMessages(fromDate string) (chatMessages []ChatMessage, err error) {
 	path := "/v1/getchats"
 	params := ""
 	if fromDate != "" {
 		params = "?from_date=" + fromDate
 	}
-	var chatMessages []ChatMessage
 
-	byteArray, err := a.PublicAPIRequest(path, "GET", params)
+	byteSlice, err := a.PublicAPIRequest(path, "GET", params)
 	if err != nil {
 		return chatMessages, err
 	}
-	err = json.Unmarshal(byteArray, &chatMessages)
+	err = json.Unmarshal(byteSlice, &chatMessages)
 
 	return chatMessages, err
 }
