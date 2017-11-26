@@ -283,3 +283,56 @@ func (a *API) CancelChildOrder(cancelChildOrderBody CancelChildOrderBody) (err e
 	_, err = a.PrivateAPIRequest(path, "POST", string(jsonByte))
 	return err
 }
+
+type SendParentOrderBody struct {
+	OrderMethod    string                     `json:"order_method"`
+	MinutetoExpire int64                      `json:"minute_to_expire"`
+	TimeinForce    string                     `json:"time_in_force"`
+	Params         []SendParentOrderBodyParam `json:"parameters"`
+}
+
+type SendParentOrderBodyParam struct {
+	ProductCode   string  `json:"product_code"`
+	ConditionType string  `json:"condition_type"`
+	Side          string  `json:"side"`
+	Price         float64 `json:"price"`
+	Size          float64 `json:"size"`
+}
+
+type SendChildOrder struct {
+	ParentOrderAcceptanceID string `json:"parent_order_acceptance_id"`
+}
+
+func (a *API) SendParentOrder(sendParentOrderBody SendParentOrderBody) (sendParentOrder SendParentOrder, err error) {
+	path := "/v1/me/sendparentorder"
+
+	jsonByte, err := json.Marshal(sendParentOrderBody)
+	if err != nil {
+		return SendChildOrder, err
+	}
+
+	byteSlice, err := a.PrivateAPIRequest(path, "POST", string(jsonByte))
+	if err != nil {
+		return sendParentOrder, err
+	}
+
+	err = json.Unmarshal(byteSlice, &sendParentOrder)
+	return sendParentOrder, err
+}
+
+type CancelParentOrderBody struct {
+	ProductCode   string `json:"product_code"`
+	ParentOrderID string `json:"parent_order_id"`
+}
+
+func (a *API) CancelParentOrder(cancelParentOrderBody CancelParentOrderBody) (err error) {
+	path := "/v1/me/cancelparentorder"
+
+	jsonByte, err := json.Marshal(cancelParentOrderBody)
+	if err != nil {
+		return err
+	}
+
+	_, err = a.PrivateAPIRequest(path, "POST", string(jsonByte))
+	return err
+}
