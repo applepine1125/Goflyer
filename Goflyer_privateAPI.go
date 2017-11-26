@@ -493,8 +493,7 @@ func (a *API) GetPositions(productCode string) (positions []Positions, er error)
 	if err != nil {
 		return positions, err
 	}
+
 	err = json.Unmarshal(byteSlice, &positions)
-
 	return positions, err
-
 }

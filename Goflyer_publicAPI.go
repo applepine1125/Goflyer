@@ -18,7 +18,6 @@ func (a *API) GetMarkets() (markets []Market, err error) {
 	}
 
 	err = json.Unmarshal(byteSlice, &markets)
-
 	return markets, err
 }
 
@@ -46,7 +45,6 @@ func (a *API) GetBoard(ProductCode string) (board Board, err error) {
 	}
 
 	err = json.Unmarshal(byteSlice, &board)
-
 	return board, err
 }
 
@@ -76,8 +74,8 @@ func (a *API) GetTicker(ProductCode string) (ticker Ticker, err error) {
 	if err != nil {
 		return ticker, err
 	}
-	err = json.Unmarshal(byteSlice, &ticker)
 
+	err = json.Unmarshal(byteSlice, &ticker)
 	return ticker, err
 }
 
@@ -102,8 +100,8 @@ func (a *API) GetMarketExecutions(ProductCode string) (marketExecutions []Market
 	if err != nil {
 		return marketExecutions, err
 	}
-	err = json.Unmarshal(byteSlice, &marketExecutions)
 
+	err = json.Unmarshal(byteSlice, &marketExecutions)
 	return marketExecutions, err
 }
 
@@ -128,8 +126,8 @@ func (a *API) GetBoardState(ProductCode string) (boardState BoardState, err erro
 	if err != nil {
 		return boardState, err
 	}
-	err = json.Unmarshal(byteSlice, &boardState)
 
+	err = json.Unmarshal(byteSlice, &boardState)
 	return boardState, err
 }
 
@@ -148,8 +146,8 @@ func (a *API) GetMarketHealth(ProductCode string) (marketHealth MarketHealth, er
 	if err != nil {
 		return marketHealth, err
 	}
-	err = json.Unmarshal(byteSlice, &marketHealth)
 
+	err = json.Unmarshal(byteSlice, &marketHealth)
 	return marketHealth, err
 }
 
@@ -170,7 +168,7 @@ func (a *API) GetChatMessages(fromDate string) (chatMessages []ChatMessage, err 
 	if err != nil {
 		return chatMessages, err
 	}
-	err = json.Unmarshal(byteSlice, &chatMessages)
 
+	err = json.Unmarshal(byteSlice, &chatMessages)
 	return chatMessages, err
 }
