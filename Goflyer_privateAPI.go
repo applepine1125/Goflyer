@@ -468,3 +468,33 @@ func (a *API) GetExecutions(query string) (executions []Execution, err error) {
 	err = json.Unmarshal(byteSlice, &executions)
 	return executions, err
 }
+
+type Position struct {
+	ProductCode         string  `json:"product_code"`
+	Side                string  `json:"side"`
+	Price               float64 `json:"price"`
+	Size                float64 `json:"size"`
+	Commission          float64 `json:"commission"`
+	SwapPointAccumulate float64 `json:"swap_point_accumulate"`
+	RequireCollateral   float64 `json:"require_collateral"`
+	OpenDate            string  `json:"open_date"`
+	Leverage            float64 `json:"leverage"`
+	Pnl                 float64 `json:"pnl"`
+}
+
+func (a *API) GetPositions(productCode string) (positions []Positions, er error) {
+	path := "/v1/me/getpositions"
+	params := ""
+	if productCode != "" {
+		params = "?product_code=" + productCode
+	}
+
+	byteSlice, err := a.PrivateAPIRequest(path+params, "GET", "")
+	if err != nil {
+		return positions, err
+	}
+	err = json.Unmarshal(byteSlice, &positions)
+
+	return positions, err
+
+}
