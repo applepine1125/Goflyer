@@ -39,7 +39,6 @@ func (a *API) GetBalance() (balances []Balance, err error) {
 	}
 
 	err = json.Unmarshal(byteSlice, &balances)
-
 	return balances, err
 }
 
@@ -59,7 +58,6 @@ func (a *API) GetCollateral() (collateral Collateral, err error) {
 	}
 
 	err = json.Unmarshal(byteSlice, &collateral)
-
 	return collateral, err
 }
 
@@ -77,7 +75,6 @@ func (a *API) GetCollateralAccounts() (collateralAccounts []CollateralAccount, e
 	}
 
 	err = json.Unmarshal(byteSlice, &collateralAccounts)
-
 	return collateralAccounts, err
 }
 
@@ -96,7 +93,6 @@ func (a *API) GetCoinAddresses() (coinAddresses []CoinAddress, err error) {
 	}
 
 	err = json.Unmarshal(byteSlice, &coinAddresses)
-
 	return coinAddresses, err
 }
 
@@ -120,7 +116,6 @@ func (a *API) GetCoinDepositHistories() (coinDepositHistories []CoinDepositHisto
 	}
 
 	err = json.Unmarshal(byteSlice, &coinDepositHistories)
-
 	return coinDepositHistories, err
 }
 
@@ -146,7 +141,6 @@ func (a *API) GetCoinSendingHistories() (coinSendingHistories []CoinSendingHisto
 	}
 
 	err = json.Unmarshal(byteSlice, &coinSendingHistories)
-
 	return coinSendingHistories, err
 }
 
@@ -169,7 +163,6 @@ func (a *API) GetBankAccounts() (bankAccounts []BankAccount, err error) {
 	}
 
 	err = json.Unmarshal(byteSlice, &bankAccounts)
-
 	return bankAccounts, err
 }
 
@@ -191,6 +184,55 @@ func (a *API) GetMoneyDepositHistories() (moneyDepositHistories []MoneyDepositHi
 	}
 
 	err = json.Unmarshal(byteSlice, &moneyDepositHistories)
-
 	return moneyDepositHistories, err
+}
+
+type MoneyWithdraw struct {
+	MessageID string `json:"message_id"`
+}
+
+type MoneyWithdrawBody struct {
+	CurrencyCode  string `json:"currency_code"`
+	BankAccountID int64  `json:"bank_account_id"`
+	Amount        int64  `json:"amount"`
+	Code          int64  `json:"code"`
+}
+
+func (a *API) MoneyWithdraw(currencyCode string, bankAccountID int64, amount int64, code int64) (moneyWithdraw MoneyWithdraw, err error) {
+	path := "/v1/me/withdraw"
+	body := MoneyWithdrawBody{CurrencyCode: currencyCode, BankAccountID: bankAccountID, Amount: amount, Code: code}
+
+	jsonByte, err := json.Marshal(body)
+	if err != nil {
+		return moneyWithdraw, err
+	}
+
+	byteSlice, err := a.PrivateAPIRequest(path, "POST", string(jsonByte))
+	if err != nil {
+		return moneyWithdraw, err
+	}
+
+	err = json.Unmarshal(byteSlice, &moneyWithdraw)
+	return moneyWithdraw, err
+}
+
+type MoneyWithdrawHistory struct {
+	ID           int64  `json:"id"`
+	OrderID      string `json:"order_id"`
+	CurrencyCode string `json:"currency_code"`
+	Amount       int64  `json:"amount"`
+	Status       string `json:"status"`
+	EventDate    string `json:"event_date"`
+}
+
+func (a *API) GetMoneyWithdrawHistories() (moneyWithdrawHistories []MoneyWithdrawHistory, err error) {
+	path := "/v1/me/getwithdrawals"
+	byteSlice, err := a.PrivateAPIRequest(path, "GET", "")
+
+	if err != nil {
+		return moneyWithdrawHistories, err
+	}
+
+	err = json.Unmarshal(byteSlice, &moneyWithdrawHistories)
+	return moneyWithdrawHistories, err
 }
