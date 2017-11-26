@@ -198,11 +198,10 @@ type MoneyWithdrawBody struct {
 	Code          int64  `json:"code"`
 }
 
-func (a *API) MoneyWithdraw(currencyCode string, bankAccountID int64, amount int64, code int64) (moneyWithdraw MoneyWithdraw, err error) {
+func (a *API) MoneyWithdraw(moneyWithdrawBody MoneyWithdrawBody) (moneyWithdraw MoneyWithdraw, err error) {
 	path := "/v1/me/withdraw"
-	body := MoneyWithdrawBody{CurrencyCode: currencyCode, BankAccountID: bankAccountID, Amount: amount, Code: code}
 
-	jsonByte, err := json.Marshal(body)
+	jsonByte, err := json.Marshal(moneyWithdrawBody)
 	if err != nil {
 		return moneyWithdraw, err
 	}
@@ -235,4 +234,52 @@ func (a *API) GetMoneyWithdrawHistories() (moneyWithdrawHistories []MoneyWithdra
 
 	err = json.Unmarshal(byteSlice, &moneyWithdrawHistories)
 	return moneyWithdrawHistories, err
+}
+
+type SendChildOrderBody struct {
+	ProductCode    string  `json:"product_code"`
+	ChildOrderType string  `json:"child_order_type"`
+	Side           string  `json:"side"`
+	Price          float64 `json:"price"`
+	Size           float64 `json:"size"`
+	MinutetoExpire int64   `json:"minute_to_expire"`
+	TimeinForce    string  `json:"time_in_force"`
+}
+
+type SendChildOrder struct {
+	ChildOrderAcceptanceID string `json:"child_order_acceptance_id"`
+}
+
+func (a *API) SendChildOrder(sendChildOrderBody SendChildOrderBody) (sendChildOrder SendChildOrder, err error) {
+	path := "/v1/me/sendchildorder"
+
+	jsonByte, err := json.Marshal(sendChildOrderBody)
+	if err != nil {
+		return sendChildOrder, err
+	}
+
+	byteSlice, err := a.PrivateAPIRequest(path, "POST", string(jsonByte))
+	if err != nil {
+		return sendChildOrder, err
+	}
+
+	err = json.Unmarshal(byteSlice, &sendChildOrder)
+	return sendChildOrder, err
+}
+
+type CancelChildOrderBody struct {
+	ProductCode  string `json:"product_code"`
+	ChildOrderID string `json:"child_order_id"`
+}
+
+func (a *API) CancelChildOrder(cancelChildOrderBody CancelChildOrderBody) (err error) {
+	path := "/v1/me/cancelchildorder"
+
+	jsonByte, err := json.Marshal(cancelChildOrderBody)
+	if err != nil {
+		return err
+	}
+
+	_, err = a.PrivateAPIRequest(path, "POST", string(jsonByte))
+	return err
 }
