@@ -187,7 +187,7 @@ func (a *API) GetMoneyDepositHistories() (moneyDepositHistories []MoneyDepositHi
 	return moneyDepositHistories, err
 }
 
-type MoneyWithdraw struct {
+type MoneyWithdrawResp struct {
 	MessageID string `json:"message_id"`
 }
 
@@ -198,21 +198,21 @@ type MoneyWithdrawBody struct {
 	Code          int64  `json:"code"`
 }
 
-func (a *API) MoneyWithdraw(moneyWithdrawBody MoneyWithdrawBody) (moneyWithdraw MoneyWithdraw, err error) {
+func (a *API) MoneyWithdraw(moneyWithdrawBody MoneyWithdrawBody) (moneyWithdrawResp MoneyWithdrawResp, err error) {
 	path := "/v1/me/withdraw"
 
 	jsonByte, err := json.Marshal(moneyWithdrawBody)
 	if err != nil {
-		return moneyWithdraw, err
+		return moneyWithdrawResp, err
 	}
 
 	byteSlice, err := a.PrivateAPIRequest(path, "POST", string(jsonByte))
 	if err != nil {
-		return moneyWithdraw, err
+		return moneyWithdrawResp, err
 	}
 
-	err = json.Unmarshal(byteSlice, &moneyWithdraw)
-	return moneyWithdraw, err
+	err = json.Unmarshal(byteSlice, &moneyWithdrawResp)
+	return moneyWithdrawResp, err
 }
 
 type MoneyWithdrawHistory struct {
@@ -246,25 +246,25 @@ type SendChildOrderBody struct {
 	TimeinForce    string  `json:"time_in_force"`
 }
 
-type SendChildOrder struct {
+type SendChildOrderResp struct {
 	ChildOrderAcceptanceID string `json:"child_order_acceptance_id"`
 }
 
-func (a *API) SendChildOrder(sendChildOrderBody SendChildOrderBody) (sendChildOrder SendChildOrder, err error) {
+func (a *API) SendChildOrder(sendChildOrderBody SendChildOrderBody) (sendChildOrderResp SendChildOrderResp, err error) {
 	path := "/v1/me/sendchildorder"
 
 	jsonByte, err := json.Marshal(sendChildOrderBody)
 	if err != nil {
-		return sendChildOrder, err
+		return sendChildOrderResp, err
 	}
 
 	byteSlice, err := a.PrivateAPIRequest(path, "POST", string(jsonByte))
 	if err != nil {
-		return sendChildOrder, err
+		return sendChildOrderResp, err
 	}
 
-	err = json.Unmarshal(byteSlice, &sendChildOrder)
-	return sendChildOrder, err
+	err = json.Unmarshal(byteSlice, &sendChildOrderResp)
+	return sendChildOrderResp, err
 }
 
 type CancelChildOrderBody struct {
@@ -299,25 +299,25 @@ type SendParentOrderBodyParam struct {
 	Size          float64 `json:"size"`
 }
 
-type SendChildOrder struct {
+type SendParentOrderResp struct {
 	ParentOrderAcceptanceID string `json:"parent_order_acceptance_id"`
 }
 
-func (a *API) SendParentOrder(sendParentOrderBody SendParentOrderBody) (sendParentOrder SendParentOrder, err error) {
+func (a *API) SendParentOrder(sendParentOrderBody SendParentOrderBody) (sendParentOrderResp SendParentOrderResp, err error) {
 	path := "/v1/me/sendparentorder"
 
 	jsonByte, err := json.Marshal(sendParentOrderBody)
 	if err != nil {
-		return SendChildOrder, err
+		return sendParentOrderResp, err
 	}
 
 	byteSlice, err := a.PrivateAPIRequest(path, "POST", string(jsonByte))
 	if err != nil {
-		return sendParentOrder, err
+		return sendParentOrderResp, err
 	}
 
-	err = json.Unmarshal(byteSlice, &sendParentOrder)
-	return sendParentOrder, err
+	err = json.Unmarshal(byteSlice, &sendParentOrderResp)
+	return sendParentOrderResp, err
 }
 
 type CancelParentOrderBody struct {
@@ -335,4 +335,136 @@ func (a *API) CancelParentOrder(cancelParentOrderBody CancelParentOrderBody) (er
 
 	_, err = a.PrivateAPIRequest(path, "POST", string(jsonByte))
 	return err
+}
+
+type CancelAllChildOrdersBody struct {
+	ProductCode string `json:"product_code"`
+}
+
+func (a *API) CancelAllChildOrders(cancelAllChildOrdersBody CancelAllChildOrdersBody) (err error) {
+	path := "/v1/me/cancelallchildorders"
+
+	jsonByte, err := json.Marshal(cancelAllChildOrdersBody)
+	if err != nil {
+		return err
+	}
+
+	_, err = a.PrivateAPIRequest(path, "POST", string(jsonByte))
+	return err
+}
+
+type ChildOrder struct {
+	ID                     int64   `json:"id"`
+	ChildOrderID           string  `json:"child_order_id"`
+	ProductCode            string  `json:"product_code"`
+	Side                   string  `json:"side"`
+	ChildOrderType         string  `json:"child_order_type"`
+	Price                  float64 `json:"price"`
+	AveragePrice           float64 `json:"average_price"`
+	Size                   float64 `json:"size"`
+	ChildOrderState        string  `json:"child_order_state"`
+	ExpireDate             string  `json:"expire_date"`
+	ChildOrderDate         string  `json:"child_order_date"`
+	ChildOrderAcceptanceID string  `json:"child_order_acceptance_id"`
+	OutstandingSize        float64 `json:"outstanding_size"`
+	CancelSize             float64 `json:"cancel_size"`
+	ExecutedSize           float64 `json:"executed_size"`
+	TotalCommision         float64 `json:"total_commission"`
+}
+
+func (a *API) GetChildOrders(query string) (childOrders []ChildOrder, err error) {
+	path := "/v1/me/getchildorders"
+
+	byteSlice, err := a.PrivateAPIRequest(path+query, "GET", "")
+	if err != nil {
+		return childOrders, err
+	}
+
+	err = json.Unmarshal(byteSlice, &childOrders)
+	return childOrders, err
+}
+
+type ParentOrder struct {
+	ID                      int64   `json:"id"`
+	ParentOrderID           string  `json:"parent_order_id"`
+	ProductCode             string  `json:"product_code"`
+	Side                    string  `json:"side"`
+	ParentOrderType         string  `json:"parent_order_type"`
+	Price                   float64 `json:"price"`
+	AveragePrice            float64 `json:"average_price"`
+	Size                    float64 `json:"size"`
+	ParentOrderState        string  `json:"parent_order_state"`
+	ExpireDate              string  `json:"expire_date"`
+	ParentOrderDate         string  `json:"parent_order_date"`
+	ParentOrderAcceptanceID string  `json:"parent_order_acceptance_id"`
+	OutstandingSize         float64 `json:"outstanding_size"`
+	CancelSize              float64 `json:"cancel_size"`
+	ExecutedSize            float64 `json:"executed_size"`
+	TotalCommision          float64 `json:"total_commission"`
+}
+
+func (a *API) GetParentOrders(query string) (parentOrders []ParentOrder, err error) {
+	path := "/v1/me/getparentorders"
+
+	byteSlice, err := a.PrivateAPIRequest(path+query, "GET", "")
+	if err != nil {
+		return parentOrders, err
+	}
+
+	err = json.Unmarshal(byteSlice, &parentOrders)
+	return parentOrders, err
+}
+
+type ParentOrderDetail struct {
+	ID                      int64                    `json:"id"`
+	ParentOrderID           string                   `json:"parent_order_id"`
+	OrderMethod             string                   `json:"order_method"`
+	MinutetoExpire          int64                    `json:"minute_to_expire"`
+	Parameters              []ParentOrderDetailParam `json:"parameters"`
+	ParentOrderAcceptanceID string                   `json:"parent_order_acceptance_id"`
+}
+
+type ParentOrderDetailParam struct {
+	ProductCode   string  `json:"product_code"`
+	ConditionType string  `json:"condition_type"`
+	Side          string  `json:"side"`
+	Price         float64 `json:"price"`
+	Size          float64 `json:"size"`
+	TriggerPrice  float64 `json:"trigger_price"`
+	Offset        float64 `json:"offset"`
+}
+
+func (a *API) GetParentOrderDetail(query string) (parentOrderDetail ParentOrderDetail, err error) {
+	path := "/v1/me/getparentorder"
+
+	byteSlice, err := a.PrivateAPIRequest(path+query, "GET", "")
+	if err != nil {
+		return parentOrderDetail, err
+	}
+
+	err = json.Unmarshal(byteSlice, &parentOrderDetail)
+	return parentOrderDetail, err
+}
+
+type Execution struct {
+	ID                     int64   `json:"id"`
+	ChildOrderID           string  `json:"child_order_id"`
+	Side                   string  `json:"side"`
+	Price                  float64 `json:"price"`
+	Size                   float64 `json:"size"`
+	Commission             float64 `json:"commission"`
+	ExecDate               string  `json:"exec_date"`
+	ChildOrderAcceptanceID string  `json:"child_order_acceptance_id"`
+}
+
+func (a *API) GetExecutions(query string) (executions []Execution, err error) {
+	path := "/v1/me/getexecuions"
+
+	byteSlice, err := a.PrivateAPIRequest(path+query, "GET", "")
+	if err != nil {
+		return executions, err
+	}
+
+	err = json.Unmarshal(byteSlice, &executions)
+	return executions, err
 }

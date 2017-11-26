@@ -81,7 +81,7 @@ func (a *API) GetTicker(ProductCode string) (ticker Ticker, err error) {
 	return ticker, err
 }
 
-type Execution struct {
+type MarketExecution struct {
 	ID                         int64   `json:"id"`
 	Side                       string  `json:"side"`
 	Price                      float64 `json:"price"`
@@ -91,7 +91,7 @@ type Execution struct {
 	SellChildOrderAcceptanceID string  `json:"sell_child_order_acceptance_id"`
 }
 
-func (a *API) GetExecutions(ProductCode string) (executions []Execution, err error) {
+func (a *API) GetMarketExecutions(ProductCode string) (marketExecutions []MarketExecution, err error) {
 	path := "/v1/executions"
 	params := ""
 	if ProductCode != "" {
@@ -100,11 +100,11 @@ func (a *API) GetExecutions(ProductCode string) (executions []Execution, err err
 
 	byteSlice, err := a.PublicAPIRequest(path, "GET", params)
 	if err != nil {
-		return executions, err
+		return marketExecutions, err
 	}
-	err = json.Unmarshal(byteSlice, &executions)
+	err = json.Unmarshal(byteSlice, &marketExecutions)
 
-	return executions, err
+	return marketExecutions, err
 }
 
 type BoardState struct {
