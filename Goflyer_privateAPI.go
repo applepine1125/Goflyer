@@ -482,7 +482,7 @@ type Position struct {
 	Pnl                 float64 `json:"pnl"`
 }
 
-func (a *API) GetPositions(productCode string) (positions []Positions, er error) {
+func (a *API) GetPositions(productCode string) (positions []Position, er error) {
 	path := "/v1/me/getpositions"
 	params := ""
 	if productCode != "" {
@@ -496,4 +496,41 @@ func (a *API) GetPositions(productCode string) (positions []Positions, er error)
 
 	err = json.Unmarshal(byteSlice, &positions)
 	return positions, err
+}
+
+type CollateralHistory struct {
+	ID           int64   `json:"id"`
+	CurrencyCode string  `json:"currency_code"`
+	Change       float64 `json:"change"`
+	Amount       float64 `json:"amount"`
+	ReasonCode   string  `json:"reason_code"`
+	Date         string  `json:"date"`
+}
+
+func (a *API) GetCollateralHistories(query string) (collateralHistories []CollateralHistory, err error) {
+	path := "/v1/me/getcollateralhistory"
+
+	byteSlice, err := a.PrivateAPIRequest(path+query, "GET", "")
+	if err != nil {
+		return collateralHistories, err
+	}
+
+	err = json.Unmarshal(byteSlice, &collateralHistories)
+	return collateralHistories, err
+}
+
+type TradingCommission struct {
+	CommissionRate float64 `json:"commission_rate"`
+}
+
+func (a *API) GetCommissionRate(query string) (tradingCommission []TradingCommission, err error) {
+	path := "/v1/me/gettradingcommission"
+
+	byteSlice, err := a.PrivateAPIRequest(path+query, "GET", "")
+	if err != nil {
+		return tradingCommission, err
+	}
+
+	err = json.Unmarshal(byteSlice, &tradingCommission)
+	return tradingCommission, err
 }
