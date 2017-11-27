@@ -32,14 +32,9 @@ type Order struct {
 	Size  float64 `json:"size"`
 }
 
-func (a *API) GetBoard(ProductCode string) (board Board, err error) {
+func (a *API) GetBoard(query string) (board Board, err error) {
 	path := "/v1/board"
-	params := ""
-	if ProductCode != "" {
-		params = "?product_code=" + ProductCode
-	}
-
-	byteSlice, err := a.PublicAPIRequest(path, "GET", params)
+	byteSlice, err := a.PublicAPIRequest(path, "GET", query)
 	if err != nil {
 		return board, err
 	}
@@ -63,14 +58,9 @@ type Ticker struct {
 	VolumeByProduct float64 `json:"volume_by_product"`
 }
 
-func (a *API) GetTicker(ProductCode string) (ticker Ticker, err error) {
+func (a *API) GetTicker(query string) (ticker Ticker, err error) {
 	path := "/v1/ticker"
-	params := ""
-	if ProductCode != "" {
-		params = "?product_code=" + ProductCode
-	}
-
-	byteSlice, err := a.PublicAPIRequest(path, "GET", params)
+	byteSlice, err := a.PublicAPIRequest(path, "GET", query)
 	if err != nil {
 		return ticker, err
 	}
@@ -89,14 +79,9 @@ type MarketExecution struct {
 	SellChildOrderAcceptanceID string  `json:"sell_child_order_acceptance_id"`
 }
 
-func (a *API) GetMarketExecutions(ProductCode string) (marketExecutions []MarketExecution, err error) {
+func (a *API) GetMarketExecutions(query string) (marketExecutions []MarketExecution, err error) {
 	path := "/v1/executions"
-	params := ""
-	if ProductCode != "" {
-		params = "?product_code=" + ProductCode
-	}
-
-	byteSlice, err := a.PublicAPIRequest(path, "GET", params)
+	byteSlice, err := a.PublicAPIRequest(path, "GET", query)
 	if err != nil {
 		return marketExecutions, err
 	}
@@ -115,14 +100,9 @@ type specialQuotation struct {
 	SpecialQuotation float64 `json:"special_quotation"`
 }
 
-func (a *API) GetBoardState(ProductCode string) (boardState BoardState, err error) {
+func (a *API) GetBoardState(query string) (boardState BoardState, err error) {
 	path := "/v1/getboardstate"
-	params := ""
-	if ProductCode != "" {
-		params = "?product_code=" + ProductCode
-	}
-
-	byteSlice, err := a.PublicAPIRequest(path, "GET", params)
+	byteSlice, err := a.PublicAPIRequest(path, "GET", query)
 	if err != nil {
 		return boardState, err
 	}
@@ -135,14 +115,9 @@ type MarketHealth struct {
 	Status string `json:"status"`
 }
 
-func (a *API) GetMarketHealth(ProductCode string) (marketHealth MarketHealth, err error) {
+func (a *API) GetMarketHealth(query string) (marketHealth MarketHealth, err error) {
 	path := "/v1/gethealth"
-	params := ""
-	if ProductCode != "" {
-		params = "?product_code=" + ProductCode
-	}
-
-	byteSlice, err := a.PublicAPIRequest(path, "GET", params)
+	byteSlice, err := a.PublicAPIRequest(path, "GET", query)
 	if err != nil {
 		return marketHealth, err
 	}
@@ -157,14 +132,9 @@ type ChatMessage struct {
 	Date     string `json:"date"`
 }
 
-func (a *API) GetChatMessages(fromDate string) (chatMessages []ChatMessage, err error) {
+func (a *API) GetChatMessages(query string) (chatMessages []ChatMessage, err error) {
 	path := "/v1/getchats"
-	params := ""
-	if fromDate != "" {
-		params = "?from_date=" + fromDate
-	}
-
-	byteSlice, err := a.PublicAPIRequest(path, "GET", params)
+	byteSlice, err := a.PublicAPIRequest(path, "GET", query)
 	if err != nil {
 		return chatMessages, err
 	}

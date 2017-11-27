@@ -42,16 +42,16 @@ func (a *API) Request(req *http.Request) ([]byte, error) {
 	return byteSlice, err
 }
 
-func (a *API) PublicAPIRequest(path string, method string, params string) ([]byte, error) {
-	req, _ := http.NewRequest(method, a.url+path+params, nil)
+func (a *API) PublicAPIRequest(path string, method string, query string) ([]byte, error) {
+	req, _ := http.NewRequest(method, a.url+path+query, nil)
 	byteSlice, err := a.Request(req)
 
 	return byteSlice, err
 }
 
-func (a *API) PrivateAPIRequest(path string, method string, body string) ([]byte, error) {
+func (a *API) PrivateAPIRequest(path string, method string, query string, body string) ([]byte, error) {
 	accessTimeStamp := string(time.Now().Unix())
-	accessSign := accessTimeStamp + method + path + body
+	accessSign := accessTimeStamp + method + path + query + body
 	hmac := hmac.New(sha256.New, []byte(a.secret))
 	hmac.Write([]byte(accessSign))
 	sha256AccessSign := hex.EncodeToString(hmac.Sum(nil))
