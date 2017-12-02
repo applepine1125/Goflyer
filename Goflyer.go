@@ -1,6 +1,7 @@
 package Goflyer
 
 import (
+	"bytes"
 	"crypto/hmac"
 	"crypto/sha256"
 	"encoding/hex"
@@ -49,17 +50,19 @@ func (a *API) PublicAPIRequest(path string, method string, query string) ([]byte
 	return byteSlice, err
 }
 
-func (a *API) PrivateAPIRequest(path string, method string, query string, body string) ([]byte, error) {
+func (a *API) PrivateAPIRequest(path string, method string, query string, body []byte) ([]byte, error) {
 	accessTimeStamp := string(time.Now().Unix())
-	accessSign := accessTimeStamp + method + path + query + body
+	accessSign := accessTimeStamp + method + path + query + string(body)
 	hmac := hmac.New(sha256.New, []byte(a.secret))
 	hmac.Write([]byte(accessSign))
 	sha256AccessSign := hex.EncodeToString(hmac.Sum(nil))
 
-	req, _ := http.NewRequest(method, a.url+path, nil)
+	req, _ := http.NewRequest(method, a.url+path, bytes.NewBuffer(body))
+
 	req.Header.Set("ACCESS-KEY", a.key)
 	req.Header.Set("ACCESS-TIMESTAMP", accessTimeStamp)
 	req.Header.Set("ACCESS-SIGN", sha256AccessSign)
+	req.Header.Set("content-Type", "application/json")
 
 	byteSlice, err := a.Request(req)
 

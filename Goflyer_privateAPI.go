@@ -8,7 +8,7 @@ import (
 func (a *API) GetPermissions() ([]string, error) {
 	path := "/v1/me/getpermissions"
 
-	byteSlice, err := a.PrivateAPIRequest(path, "GET", "", "")
+	byteSlice, err := a.PrivateAPIRequest(path, "GET", "", nil)
 	return byteSlice2strSlice(byteSlice), err
 }
 
@@ -32,7 +32,7 @@ type Balance struct {
 
 func (a *API) GetBalance() (balances []Balance, err error) {
 	path := "/v1/me/getbalance"
-	byteSlice, err := a.PrivateAPIRequest(path, "GET", "", "")
+	byteSlice, err := a.PrivateAPIRequest(path, "GET", "", nil)
 
 	if err != nil {
 		return balances, err
@@ -51,7 +51,7 @@ type Collateral struct {
 
 func (a *API) GetCollateral() (collateral Collateral, err error) {
 	path := "/v1/me/getcollateral"
-	byteSlice, err := a.PrivateAPIRequest(path, "GET", "", "")
+	byteSlice, err := a.PrivateAPIRequest(path, "GET", "", nil)
 
 	if err != nil {
 		return collateral, err
@@ -68,7 +68,7 @@ type CollateralAccount struct {
 
 func (a *API) GetCollateralAccounts() (collateralAccounts []CollateralAccount, err error) {
 	path := "/v1/me/getcollateralaccounts"
-	byteSlice, err := a.PrivateAPIRequest(path, "GET", "", "")
+	byteSlice, err := a.PrivateAPIRequest(path, "GET", "", nil)
 
 	if err != nil {
 		return collateralAccounts, err
@@ -86,7 +86,7 @@ type CoinAddress struct {
 
 func (a *API) GetCoinAddresses() (coinAddresses []CoinAddress, err error) {
 	path := "/v1/me/getaddresses"
-	byteSlice, err := a.PrivateAPIRequest(path, "GET", "", "")
+	byteSlice, err := a.PrivateAPIRequest(path, "GET", "", nil)
 
 	if err != nil {
 		return coinAddresses, err
@@ -109,7 +109,7 @@ type CoinDepositHistory struct {
 
 func (a *API) GetCoinDepositHistories(query string) (coinDepositHistories []CoinDepositHistory, err error) {
 	path := "/v1/me/getcoinins"
-	byteSlice, err := a.PrivateAPIRequest(path, "GET", query, "")
+	byteSlice, err := a.PrivateAPIRequest(path, "GET", query, nil)
 
 	if err != nil {
 		return coinDepositHistories, err
@@ -134,7 +134,7 @@ type CoinSendingHistory struct {
 
 func (a *API) GetCoinSendingHistories(query string) (coinSendingHistories []CoinSendingHistory, err error) {
 	path := "/v1/me/getcoinouts"
-	byteSlice, err := a.PrivateAPIRequest(path, "GET", query, "")
+	byteSlice, err := a.PrivateAPIRequest(path, "GET", query, nil)
 
 	if err != nil {
 		return coinSendingHistories, err
@@ -156,7 +156,7 @@ type BankAccount struct {
 
 func (a *API) GetBankAccounts() (bankAccounts []BankAccount, err error) {
 	path := "/v1/me/getbankaccounts"
-	byteSlice, err := a.PrivateAPIRequest(path, "GET", "", "")
+	byteSlice, err := a.PrivateAPIRequest(path, "GET", "", nil)
 
 	if err != nil {
 		return bankAccounts, err
@@ -177,7 +177,7 @@ type MoneyDepositHistory struct {
 
 func (a *API) GetMoneyDepositHistories(query string) (moneyDepositHistories []MoneyDepositHistory, err error) {
 	path := "/v1/me/getdeposits"
-	byteSlice, err := a.PrivateAPIRequest(path, "GET", query, "")
+	byteSlice, err := a.PrivateAPIRequest(path, "GET", query, nil)
 
 	if err != nil {
 		return moneyDepositHistories, err
@@ -206,7 +206,7 @@ func (a *API) MoneyWithdraw(moneyWithdrawBody MoneyWithdrawBody) (moneyWithdrawR
 		return moneyWithdrawResp, err
 	}
 
-	byteSlice, err := a.PrivateAPIRequest(path, "POST", "", string(jsonByte))
+	byteSlice, err := a.PrivateAPIRequest(path, "POST", "", jsonByte)
 	if err != nil {
 		return moneyWithdrawResp, err
 	}
@@ -226,7 +226,7 @@ type MoneyWithdrawHistory struct {
 
 func (a *API) GetMoneyWithdrawHistories(query string) (moneyWithdrawHistories []MoneyWithdrawHistory, err error) {
 	path := "/v1/me/getwithdrawals"
-	byteSlice, err := a.PrivateAPIRequest(path, "GET", query, "")
+	byteSlice, err := a.PrivateAPIRequest(path, "GET", query, nil)
 
 	if err != nil {
 		return moneyWithdrawHistories, err
@@ -258,7 +258,7 @@ func (a *API) SendChildOrder(sendChildOrderBody SendChildOrderBody) (sendChildOr
 		return sendChildOrderResp, err
 	}
 
-	byteSlice, err := a.PrivateAPIRequest(path, "POST", "", string(jsonByte))
+	byteSlice, err := a.PrivateAPIRequest(path, "POST", "", jsonByte)
 	if err != nil {
 		return sendChildOrderResp, err
 	}
@@ -280,7 +280,7 @@ func (a *API) CancelChildOrder(cancelChildOrderBody CancelChildOrderBody) (err e
 		return err
 	}
 
-	_, err = a.PrivateAPIRequest(path, "POST", "", string(jsonByte))
+	_, err = a.PrivateAPIRequest(path, "POST", "", jsonByte)
 	return err
 }
 
@@ -311,7 +311,7 @@ func (a *API) SendParentOrder(sendParentOrderBody SendParentOrderBody) (sendPare
 		return sendParentOrderResp, err
 	}
 
-	byteSlice, err := a.PrivateAPIRequest(path, "POST", "", string(jsonByte))
+	byteSlice, err := a.PrivateAPIRequest(path, "POST", "", jsonByte)
 	if err != nil {
 		return sendParentOrderResp, err
 	}
@@ -333,7 +333,7 @@ func (a *API) CancelParentOrder(cancelParentOrderBody CancelParentOrderBody) (er
 		return err
 	}
 
-	_, err = a.PrivateAPIRequest(path, "POST", "", string(jsonByte))
+	_, err = a.PrivateAPIRequest(path, "POST", "", jsonByte)
 	return err
 }
 
@@ -349,7 +349,7 @@ func (a *API) CancelAllChildOrders(cancelAllChildOrdersBody CancelAllChildOrders
 		return err
 	}
 
-	_, err = a.PrivateAPIRequest(path, "POST", "", string(jsonByte))
+	_, err = a.PrivateAPIRequest(path, "POST", "", jsonByte)
 	return err
 }
 
@@ -375,7 +375,7 @@ type ChildOrder struct {
 func (a *API) GetChildOrders(query string) (childOrders []ChildOrder, err error) {
 	path := "/v1/me/getchildorders"
 
-	byteSlice, err := a.PrivateAPIRequest(path, "GET", query, "")
+	byteSlice, err := a.PrivateAPIRequest(path, "GET", query, nil)
 	if err != nil {
 		return childOrders, err
 	}
@@ -406,7 +406,7 @@ type ParentOrder struct {
 func (a *API) GetParentOrders(query string) (parentOrders []ParentOrder, err error) {
 	path := "/v1/me/getparentorders"
 
-	byteSlice, err := a.PrivateAPIRequest(path, "GET", "", "")
+	byteSlice, err := a.PrivateAPIRequest(path, "GET", "", nil)
 	if err != nil {
 		return parentOrders, err
 	}
@@ -437,7 +437,7 @@ type ParentOrderDetailParam struct {
 func (a *API) GetParentOrderDetail(query string) (parentOrderDetail ParentOrderDetail, err error) {
 	path := "/v1/me/getparentorder"
 
-	byteSlice, err := a.PrivateAPIRequest(path, "GET", "", "")
+	byteSlice, err := a.PrivateAPIRequest(path, "GET", "", nil)
 	if err != nil {
 		return parentOrderDetail, err
 	}
@@ -460,7 +460,7 @@ type Execution struct {
 func (a *API) GetExecutions(query string) (executions []Execution, err error) {
 	path := "/v1/me/getexecuions"
 
-	byteSlice, err := a.PrivateAPIRequest(path, "GET", "", "")
+	byteSlice, err := a.PrivateAPIRequest(path, "GET", "", nil)
 	if err != nil {
 		return executions, err
 	}
@@ -485,7 +485,7 @@ type Position struct {
 func (a *API) GetPositions(query string) (positions []Position, er error) {
 	path := "/v1/me/getpositions"
 
-	byteSlice, err := a.PrivateAPIRequest(path, "GET", "", "")
+	byteSlice, err := a.PrivateAPIRequest(path, "GET", "", nil)
 	if err != nil {
 		return positions, err
 	}
@@ -506,7 +506,7 @@ type CollateralHistory struct {
 func (a *API) GetCollateralHistories(query string) (collateralHistories []CollateralHistory, err error) {
 	path := "/v1/me/getcollateralhistory"
 
-	byteSlice, err := a.PrivateAPIRequest(path, "GET", "", "")
+	byteSlice, err := a.PrivateAPIRequest(path, "GET", "", nil)
 	if err != nil {
 		return collateralHistories, err
 	}
@@ -522,7 +522,7 @@ type TradingCommission struct {
 func (a *API) GetCommissionRate(query string) (tradingCommission []TradingCommission, err error) {
 	path := "/v1/me/gettradingcommission"
 
-	byteSlice, err := a.PrivateAPIRequest(path, "GET", "", "")
+	byteSlice, err := a.PrivateAPIRequest(path, "GET", "", nil)
 	if err != nil {
 		return tradingCommission, err
 	}
