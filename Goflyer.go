@@ -57,7 +57,7 @@ func (a *API) PrivateAPIRequest(path string, method string, query string, body [
 	hmac.Write([]byte(accessSign))
 	sha256AccessSign := hex.EncodeToString(hmac.Sum(nil))
 
-	req, _ := http.NewRequest(method, a.url+path, bytes.NewBuffer(body))
+	req, _ := http.NewRequest(method, a.url+path+query, bytes.NewBuffer(body))
 
 	req.Header.Set("ACCESS-KEY", a.key)
 	req.Header.Set("ACCESS-TIMESTAMP", accessTimeStamp)

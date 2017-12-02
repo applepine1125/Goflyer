@@ -458,9 +458,9 @@ type Execution struct {
 }
 
 func (a *API) GetExecutions(query string) (executions []Execution, err error) {
-	path := "/v1/me/getexecuions"
+	path := "/v1/me/getexecutions"
 
-	byteSlice, err := a.PrivateAPIRequest(path, "GET", "", nil)
+	byteSlice, err := a.PrivateAPIRequest(path, "GET", query, nil)
 	if err != nil {
 		return executions, err
 	}
