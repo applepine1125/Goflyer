@@ -240,7 +240,7 @@ type SendChildOrderBody struct {
 	ProductCode    string  `json:"product_code"`
 	ChildOrderType string  `json:"child_order_type"`
 	Side           string  `json:"side"`
-	Price          float64 `json:"price"`
+	Price          int64   `json:"price"`
 	Size           float64 `json:"size"`
 	MinutetoExpire int64   `json:"minute_to_expire"`
 	TimeinForce    string  `json:"time_in_force"`
